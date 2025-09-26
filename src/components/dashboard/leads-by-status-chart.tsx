@@ -26,26 +26,26 @@ type ChartData = {
 
 const chartConfig = {
   count: {
-    label: "Clients",
+    label: "Clientes",
   },
   Lead: {
     label: "Lead",
     color: "hsl(var(--chart-1))",
   },
-  Contacted: {
-    label: "Contacted",
+  Contactado: {
+    label: "Contactado",
     color: "hsl(var(--chart-2))",
   },
-  Negotiating: {
-    label: "Negotiating",
+  Negociando: {
+    label: "Negociando",
     color: "hsl(var(--chart-3))",
   },
-  Won: {
-    label: "Won",
+  Ganho: {
+    label: "Ganho",
     color: "hsl(var(--chart-4))",
   },
-  Lost: {
-    label: "Lost",
+  Perdido: {
+    label: "Perdido",
     color: "hsl(var(--chart-5))",
   },
 } satisfies ChartConfig
@@ -58,8 +58,8 @@ export function LeadsByStatusChart({ data }: { data: ChartData[] }) {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle className="font-headline">Leads by Status</CardTitle>
-        <CardDescription>Current distribution of client stages</CardDescription>
+        <CardTitle className="font-headline">Leads por Status</CardTitle>
+        <CardDescription>Distribuição atual dos estágios do cliente</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -87,7 +87,7 @@ export function LeadsByStatusChart({ data }: { data: ChartData[] }) {
       </CardContent>
       <CardContent className="flex flex-col gap-2 text-sm">
         <div className="flex items-center justify-center pt-4 text-lg font-medium leading-none">
-          <span>Total Clients: {totalClients}</span>
+          <span>Total de Clientes: {totalClients}</span>
         </div>
       </CardContent>
     </Card>

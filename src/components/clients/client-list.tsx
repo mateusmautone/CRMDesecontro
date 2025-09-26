@@ -59,12 +59,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 
-const clientStatuses: ClientStatus[] = ['Lead', 'Contacted', 'Negotiating', 'Won', 'Lost'];
+const clientStatuses: ClientStatus[] = ['Lead', 'Contactado', 'Negociando', 'Ganho', 'Perdido'];
 
 const clientFormSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters."),
-  email: z.string().email("Invalid email address."),
-  company: z.string().min(2, "Company name must be at least 2 characters."),
+  name: z.string().min(2, "O nome deve ter pelo menos 2 caracteres."),
+  email: z.string().email("Endereço de e-mail inválido."),
+  company: z.string().min(2, "O nome da empresa deve ter pelo menos 2 caracteres."),
   status: z.enum(clientStatuses),
   tags: z.string().optional(),
 });
@@ -73,10 +73,10 @@ type ClientFormData = z.infer<typeof clientFormSchema>;
 
 const statusVariant: Record<ClientStatus, "default" | "secondary" | "destructive" | "outline"> = {
   'Lead': "secondary",
-  'Contacted': "outline",
-  'Negotiating': "default",
-  'Won': "default",
-  'Lost': "destructive",
+  'Contactado': "outline",
+  'Negociando': "default",
+  'Ganho': "default",
+  'Perdido': "destructive",
 };
 
 export function ClientList() {
@@ -143,7 +143,7 @@ export function ClientList() {
         tags: data.tags ? data.tags.split(",").map(t => t.trim()) : [],
       };
       setClients(clients.map(c => c.id === editingClient.id ? updatedClient : c));
-      toast({ title: "Client Updated", description: `${data.name} has been updated.`});
+      toast({ title: "Cliente Atualizado", description: `${data.name} foi atualizado.`});
     } else {
       // Create
       const newClient: Client = {
@@ -154,7 +154,7 @@ export function ClientList() {
         createdAt: new Date().toISOString().split("T")[0],
       };
       setClients([newClient, ...clients]);
-      toast({ title: "Client Created", description: `${data.name} has been added.`});
+      toast({ title: "Cliente Criado", description: `${data.name} foi adicionado.`});
     }
     setIsFormModalOpen(false);
   };
@@ -167,7 +167,7 @@ export function ClientList() {
   const handleDeleteClient = () => {
     if (deletingClientId) {
       setClients(clients.filter(c => c.id !== deletingClientId));
-      toast({ title: "Client Deleted", variant: "destructive" });
+      toast({ title: "Cliente Excluído", variant: "destructive" });
       setDeletingClientId(null);
       setIsDeleteDialogOpen(false);
     }
@@ -179,7 +179,7 @@ export function ClientList() {
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 flex-1">
             <Input
-              placeholder="Search clients by name or company..."
+              placeholder="Buscar clientes por nome ou empresa..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="max-w-sm"
@@ -192,7 +192,7 @@ export function ClientList() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setStatusFilter("all")}>All</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setStatusFilter("all")}>Todos</DropdownMenuItem>
                 {clientStatuses.map(status => (
                   <DropdownMenuItem key={status} onClick={() => setStatusFilter(status)}>{status}</DropdownMenuItem>
                 ))}
@@ -201,19 +201,19 @@ export function ClientList() {
           </div>
           <Button onClick={() => handleOpenForm(null)}>
             <PlusCircle className="mr-2 h-4 w-4" />
-            Add Client
+            Adicionar Cliente
           </Button>
         </div>
         <div className="border rounded-lg">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Client</TableHead>
+                <TableHead>Cliente</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="hidden md:table-cell">Tags</TableHead>
-                <TableHead className="hidden md:table-cell">Created At</TableHead>
+                <TableHead className="hidden md:table-cell">Criado em</TableHead>
                 <TableHead>
-                  <span className="sr-only">Actions</span>
+                  <span className="sr-only">Ações</span>
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -251,19 +251,19 @@ export function ClientList() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
+                          <span className="sr-only">Abrir menu</span>
                           <MoreHorizontal className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => handleOpenInteractions(client)}>
-                          <Eye className="mr-2 h-4 w-4" /> View Interactions
+                          <Eye className="mr-2 h-4 w-4" /> Ver Interações
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => handleOpenForm(client)}>
-                          <Edit className="mr-2 h-4 w-4" /> Edit
+                          <Edit className="mr-2 h-4 w-4" /> Editar
                         </DropdownMenuItem>
                         <DropdownMenuItem className="text-destructive" onClick={() => handleOpenDeleteDialog(client.id)}>
-                          <Trash2 className="mr-2 h-4 w-4" /> Delete
+                          <Trash2 className="mr-2 h-4 w-4" /> Excluir
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -288,27 +288,27 @@ export function ClientList() {
       <Dialog open={isFormModalOpen} onOpenChange={setIsFormModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="font-headline">{editingClient ? 'Edit Client' : 'Add New Client'}</DialogTitle>
+            <DialogTitle className="font-headline">{editingClient ? 'Editar Cliente' : 'Adicionar Novo Cliente'}</DialogTitle>
             <DialogDescription>
-              {editingClient ? 'Update the details for this client.' : 'Fill in the details for the new client.'}
+              {editingClient ? 'Atualize os detalhes deste cliente.' : 'Preencha os detalhes para o novo cliente.'}
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4">
               <FormField name="name" control={form.control} render={({ field }) => (
-                <FormItem><FormLabel>Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                <FormItem><FormLabel>Nome</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
               )} />
               <FormField name="email" control={form.control} render={({ field }) => (
                 <FormItem><FormLabel>Email</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
               )} />
               <FormField name="company" control={form.control} render={({ field }) => (
-                <FormItem><FormLabel>Company</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                <FormItem><FormLabel>Empresa</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
               )} />
               <FormField name="status" control={form.control} render={({ field }) => (
                 <FormItem>
                   <FormLabel>Status</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl><SelectTrigger><SelectValue placeholder="Select a status" /></SelectTrigger></FormControl>
+                    <FormControl><SelectTrigger><SelectValue placeholder="Selecione um status" /></SelectTrigger></FormControl>
                     <SelectContent>
                       {clientStatuses.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                     </SelectContent>
@@ -320,12 +320,12 @@ export function ClientList() {
                 <FormItem>
                   <FormLabel>Tags</FormLabel>
                   <FormControl><Input placeholder="enterprise, q2-target, etc." {...field} /></FormControl>
-                  <FormDescription>Comma-separated tags for categorization.</FormDescription>
+                  <FormDescription>Tags separadas por vírgula para categorização.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )} />
               <DialogFooter>
-                <Button type="submit">Save</Button>
+                <Button type="submit">Salvar</Button>
               </DialogFooter>
             </form>
           </Form>
@@ -335,12 +335,12 @@ export function ClientList() {
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Are you sure?</DialogTitle>
-            <DialogDescription>This action cannot be undone. This will permanently delete the client.</DialogDescription>
+            <DialogTitle>Você tem certeza?</DialogTitle>
+            <DialogDescription>Essa ação não pode ser desfeita. Isso excluirá permanentemente o cliente.</DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>Cancel</Button>
-            <Button variant="destructive" onClick={handleDeleteClient}>Delete</Button>
+            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>Cancelar</Button>
+            <Button variant="destructive" onClick={handleDeleteClient}>Excluir</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

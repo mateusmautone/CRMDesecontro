@@ -1,7 +1,7 @@
 import { ClientList } from "@/components/clients/client-list";
 
 export const metadata = {
-  title: "Clients | Desencontro CRM",
+  title: "Clientes | Desencontro CRM",
 };
 
 export default function ClientsPage() {

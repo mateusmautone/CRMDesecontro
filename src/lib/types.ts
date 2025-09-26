@@ -1,4 +1,4 @@
-export type ClientStatus = 'Lead' | 'Contacted' | 'Negotiating' | 'Won' | 'Lost';
+export type ClientStatus = 'Lead' | 'Contactado' | 'Negociando' | 'Ganho' | 'Perdido';
 
 export type Client = {
   id: string;
@@ -19,7 +19,7 @@ export type Interaction = {
   summary?: string;
 };
 
-export type NegotiationStatus = 'Pending' | 'Active' | 'Closed - Won' | 'Closed - Lost';
+export type NegotiationStatus = 'Pendente' | 'Ativa' | 'Fechada - Ganhos' | 'Fechada - Perdida';
 
 export type Negotiation = {
   id: string;

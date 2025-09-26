@@ -27,8 +27,8 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/clients", label: "Clients", icon: Users },
-  { href: "/negotiations", label: "Negotiations", icon: Briefcase },
+  { href: "/clients", label: "Clientes", icon: Users },
+  { href: "/negotiations", label: "Negociações", icon: Briefcase },
 ]
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -68,7 +68,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 sm:py-4">
           <SidebarTrigger className="md:hidden">
             <PanelLeft className="h-5 w-5" />
-            <span className="sr-only">Toggle Menu</span>
+            <span className="sr-only">Alternar Menu</span>
           </SidebarTrigger>
           <div className="flex-1">
             <h2 className="font-headline text-2xl font-semibold">

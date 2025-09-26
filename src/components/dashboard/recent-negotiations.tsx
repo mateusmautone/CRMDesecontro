@@ -17,29 +17,29 @@ import { Badge } from "@/components/ui/badge"
 import type { Negotiation, NegotiationStatus } from "@/lib/types"
 
 const statusVariant: Record<NegotiationStatus, "default" | "secondary" | "destructive"> = {
-  "Active": "default",
-  "Pending": "secondary",
-  "Closed - Won": "default",
-  "Closed - Lost": "destructive",
+  "Ativa": "default",
+  "Pendente": "secondary",
+  "Fechada - Ganhos": "default",
+  "Fechada - Perdida": "destructive",
 }
 
 export function RecentNegotiations({ negotiations }: { negotiations: Negotiation[] }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">Active Negotiations</CardTitle>
+        <CardTitle className="font-headline">Negociações Ativas</CardTitle>
         <CardDescription>
-          A summary of ongoing and recent negotiations.
+          Um resumo das negociações em andamento e recentes.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Client</TableHead>
+              <TableHead>Cliente</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="hidden md:table-cell">Last Updated</TableHead>
-              <TableHead className="text-right">Details</TableHead>
+              <TableHead className="hidden md:table-cell">Última Atualização</TableHead>
+              <TableHead className="text-right">Detalhes</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

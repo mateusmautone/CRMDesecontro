@@ -52,8 +52,8 @@ export function InteractionManager({
       setNewNote("");
       setIsSubmitting(false);
       toast({
-        title: "Interaction Added",
-        description: `Your notes for ${client.name} have been saved.`,
+        title: "Interação Adicionada",
+        description: `Suas anotações para ${client.name} foram salvas.`,
       });
     }, 500);
   };
@@ -62,22 +62,22 @@ export function InteractionManager({
     setIsGettingSuggestion(true);
     const previousInteractionsSummary = interactions.map(i => i.notes).join("\n- ");
     const result = await getInteractionSuggestion({
-      clientDescription: `Client: ${client.name} from ${client.company}. Status: ${client.status}. Tags: ${client.tags.join(', ')}`,
-      previousInteractions: previousInteractionsSummary || "No previous interactions.",
-      currentGoal: "Continue building relationship and move to next stage.",
+      clientDescription: `Cliente: ${client.name} de ${client.company}. Status: ${client.status}. Tags: ${client.tags.join(', ')}`,
+      previousInteractions: previousInteractionsSummary || "Nenhuma interação anterior.",
+      currentGoal: "Continuar construindo o relacionamento e avançar para a próxima etapa.",
     });
     
     if (result.success && result.suggestion) {
-      setNewNote(prev => `${prev ? prev + '\n\n' : ''}AI Suggestion: ${result.suggestion}`);
+      setNewNote(prev => `${prev ? prev + '\n\n' : ''}Sugestão da IA: ${result.suggestion}`);
       toast({
-        title: "AI Suggestion Ready",
-        description: "A suggestion has been added to your notes.",
+        title: "Sugestão da IA Pronta",
+        description: "Uma sugestão foi adicionada às suas anotações.",
       });
     } else {
       toast({
         variant: "destructive",
-        title: "AI Error",
-        description: result.error || "Could not generate a suggestion.",
+        title: "Erro da IA",
+        description: result.error || "Não foi possível gerar uma sugestão.",
       });
     }
     setIsGettingSuggestion(false);
@@ -87,17 +87,17 @@ export function InteractionManager({
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetContent className="sm:max-w-lg p-0">
         <SheetHeader className="p-6">
-          <SheetTitle className="font-headline">Interactions with {client.name}</SheetTitle>
+          <SheetTitle className="font-headline">Interações com {client.name}</SheetTitle>
           <SheetDescription>
-            Record and manage all interactions with this client.
+            Registre e gerencie todas as interações com este cliente.
           </SheetDescription>
         </SheetHeader>
         <Separator />
         <div className="grid gap-4 p-6">
           <div className="space-y-2">
-            <h3 className="font-semibold text-lg">Add New Interaction</h3>
+            <h3 className="font-semibold text-lg">Adicionar Nova Interação</h3>
             <Textarea
-              placeholder="Type your notes here..."
+              placeholder="Digite suas anotações aqui..."
               value={newNote}
               onChange={(e) => setNewNote(e.target.value)}
               rows={5}
@@ -105,11 +105,11 @@ export function InteractionManager({
             <div className="flex justify-between gap-2">
                 <Button onClick={handleGetSuggestion} disabled={isGettingSuggestion} variant="outline">
                     {isGettingSuggestion ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
-                    Get AI Suggestion
+                    Obter Sugestão da IA
                 </Button>
                 <Button onClick={handleAddInteraction} disabled={isSubmitting}>
                     {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
-                    Save Note
+                    Salvar Anotação
                 </Button>
             </div>
           </div>
@@ -117,12 +117,12 @@ export function InteractionManager({
         <Separator />
         <ScrollArea className="h-[calc(100vh-320px)]">
             <div className="p-6 space-y-4">
-                <h3 className="font-semibold text-lg">Interaction History</h3>
+                <h3 className="font-semibold text-lg">Histórico de Interações</h3>
                 {interactions.length > 0 ? (
                 interactions.map((interaction) => (
                     <Card key={interaction.id}>
                         <CardHeader className="p-4">
-                            <CardTitle className="text-sm">Interaction on {interaction.date}</CardTitle>
+                            <CardTitle className="text-sm">Interação em {interaction.date}</CardTitle>
                         </CardHeader>
                         <CardContent className="p-4 pt-0 text-sm text-muted-foreground">
                             {interaction.notes}
@@ -131,7 +131,7 @@ export function InteractionManager({
                 ))
                 ) : (
                 <p className="text-sm text-muted-foreground text-center py-4">
-                    No interactions recorded yet.
+                    Nenhuma interação registrada ainda.
                 </p>
                 )}
             </div>

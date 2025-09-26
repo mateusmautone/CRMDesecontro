@@ -10,10 +10,10 @@ type StatsCardsProps = {
 
 export function StatsCards({ totalClients, activeNegotiations, dealsWon, newLeads }: StatsCardsProps) {
   const stats = [
-    { title: "Total Clients", value: totalClients, icon: Users },
-    { title: "Active Negotiations", value: activeNegotiations, icon: Handshake },
-    { title: "Deals Won (YTD)", value: dealsWon, icon: Briefcase },
-    { title: "New Leads", value: newLeads, icon: Target },
+    { title: "Total de Clientes", value: totalClients, icon: Users },
+    { title: "Negociações Ativas", value: activeNegotiations, icon: Handshake },
+    { title: "Negócios Ganhos (YTD)", value: dealsWon, icon: Briefcase },
+    { title: "Novos Leads", value: newLeads, icon: Target },
   ];
 
   return (

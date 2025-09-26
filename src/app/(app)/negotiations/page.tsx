@@ -1,7 +1,7 @@
 import { NegotiationList } from "@/components/negotiations/negotiation-list";
 
 export const metadata = {
-  title: "Negotiations | Desencontro CRM",
+  title: "Negociações | Desencontro CRM",
 };
 
 export default function NegotiationsPage() {

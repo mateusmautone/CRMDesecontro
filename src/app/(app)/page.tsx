@@ -6,8 +6,8 @@ import { ClientStatus } from "@/lib/types";
 
 export default function DashboardPage() {
   const totalClients = CLIENTS.length;
-  const activeNegotiations = NEGOTIATIONS.filter(n => n.status === 'Active').length;
-  const dealsWon = CLIENTS.filter(c => c.status === 'Won').length;
+  const activeNegotiations = NEGOTIATIONS.filter(n => n.status === 'Ativa').length;
+  const dealsWon = CLIENTS.filter(c => c.status === 'Ganho').length;
   const newLeads = CLIENTS.filter(c => c.status === 'Lead').length;
 
   const leadsByStatusData = (Object.keys(CLIENTS.reduce((acc, client) => {
@@ -16,7 +16,7 @@ export default function DashboardPage() {
   }, {} as Record<ClientStatus, number>)) as ClientStatus[]).map(status => ({
     status,
     count: CLIENTS.filter(c => c.status === status).length,
-    fill: `var(--color-${status})`
+    fill: `var(--color-${status.replace(' ', '')})`
   }));
   
   const recentNegotiations = NEGOTIATIONS.slice(0, 5);

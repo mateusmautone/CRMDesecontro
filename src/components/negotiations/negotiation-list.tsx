@@ -8,10 +8,10 @@ import type { Negotiation, NegotiationStatus } from "@/lib/types";
 import { NEGOTIATIONS } from "@/lib/data";
 
 const statusVariant: Record<NegotiationStatus, "default" | "secondary" | "destructive"> = {
-  "Active": "default",
-  "Pending": "secondary",
-  "Closed - Won": "default",
-  "Closed - Lost": "destructive",
+  "Ativa": "default",
+  "Pendente": "secondary",
+  "Fechada - Ganhos": "default",
+  "Fechada - Perdida": "destructive",
 }
 
 export function NegotiationList() {
@@ -30,7 +30,7 @@ export function NegotiationList() {
         <div className="space-y-4">
             <div className="flex items-center">
                 <Input
-                    placeholder="Search negotiations by client or details..."
+                    placeholder="Buscar negociações por cliente ou detalhes..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="max-w-sm"
@@ -40,10 +40,10 @@ export function NegotiationList() {
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Client</TableHead>
+                            <TableHead>Cliente</TableHead>
                             <TableHead>Status</TableHead>
-                            <TableHead>Agreement Details</TableHead>
-                            <TableHead>Last Updated</TableHead>
+                            <TableHead>Detalhes do Acordo</TableHead>
+                            <TableHead>Última Atualização</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
