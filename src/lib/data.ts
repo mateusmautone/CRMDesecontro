@@ -1,9 +1,12 @@
 import type { Client, Interaction, Negotiation } from './types';
 import { PlaceHolderImages } from './placeholder-images';
 
+let avatarIndex = 0;
 const randomAvatar = () => {
     const avatars = PlaceHolderImages.filter(img => img.id.startsWith('avatar'));
-    return avatars[Math.floor(Math.random() * avatars.length)].imageUrl;
+    const avatar = avatars[avatarIndex % avatars.length].imageUrl;
+    avatarIndex++;
+    return avatar;
 }
 
 export const CLIENTS: Client[] = [
