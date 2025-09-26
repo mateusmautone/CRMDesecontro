@@ -48,63 +48,58 @@ export function KanbanBoard() {
 
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
-    if (!over) return;
+    if (!over || active.id === over.id) return;
   
     const activeId = active.id;
     const overId = over.id;
-  
-    if (activeId === overId) return;
-  
-    const isActiveAClient = active.data.current?.type === 'Client';
+    
     const isOverAColumn = over.data.current?.type === 'Column';
-  
-    if (isActiveAClient && isOverAColumn) {
-      setClients(prev => {
-        const activeIndex = prev.findIndex(c => c.id === activeId);
-        if (prev[activeIndex].status !== overId) {
-          prev[activeIndex].status = overId as ClientStatus;
-          return [...prev];
+
+    if (isOverAColumn) {
+      setClients((prev) => {
+        const activeIndex = prev.findIndex((c) => c.id === activeId);
+        if (activeIndex === -1 || prev[activeIndex].status === overId) {
+          return prev;
         }
-        return prev;
+        
+        const updatedClient = { ...prev[activeIndex], status: overId as ClientStatus };
+        const newClients = [...prev];
+        newClients[activeIndex] = updatedClient;
+        
+        return newClients;
       });
     }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     setActiveClient(null);
-    const { active, over } = event;
-    if (!over) return;
-  
-    const activeId = active.id as string;
-    const overId = over.id as string;
-  
-    if (activeId === overId) return;
-  
-    // This logic is simplified. A real app might need reordering logic.
-    // For now, status change is handled in onDragOver
   };
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCorners}
-      onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
-      onDragEnd={handleDragEnd}
-    >
-      <div className="flex gap-4 h-full overflow-x-auto p-1">
-        {columns.map(col => (
-          <KanbanColumn
-            key={col.id}
-            id={col.id}
-            title={col.title}
-            clients={clients.filter(c => c.status === col.id)}
-          />
-        ))}
-      </div>
-      <DragOverlay>
-        {activeClient ? <KanbanCard client={activeClient} isOverlay /> : null}
-      </DragOverlay>
-    </DndContext>
+    <div className="flex flex-col h-full">
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCorners}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="flex-grow overflow-x-auto p-1">
+          <div className="flex gap-4 h-full">
+            {columns.map(col => (
+              <KanbanColumn
+                key={col.id}
+                id={col.id}
+                title={col.title}
+                clients={clients.filter(c => c.status === col.id)}
+              />
+            ))}
+          </div>
+        </div>
+        <DragOverlay>
+          {activeClient ? <KanbanCard client={activeClient} isOverlay /> : null}
+        </DragOverlay>
+      </DndContext>
+    </div>
   );
 }

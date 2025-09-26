@@ -1,11 +1,12 @@
 "use client";
 
-import { useDroppable, DndContext } from '@dnd-kit/core';
+import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { KanbanCard } from './kanban-card';
 import type { Client } from '@/lib/types';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { cn } from '@/lib/utils';
 
 interface KanbanColumnProps {
   id: string;
@@ -14,7 +15,7 @@ interface KanbanColumnProps {
 }
 
 export function KanbanColumn({ id, title, clients }: KanbanColumnProps) {
-  const { setNodeRef } = useDroppable({
+  const { setNodeRef, isOver } = useDroppable({
     id,
     data: {
       type: 'Column',
@@ -22,7 +23,13 @@ export function KanbanColumn({ id, title, clients }: KanbanColumnProps) {
   });
 
   return (
-    <Card className="w-80 h-full flex flex-col shrink-0">
+    <Card 
+      ref={setNodeRef} 
+      className={cn(
+        "w-80 h-full flex flex-col shrink-0 bg-muted/50 transition-colors",
+        isOver && "bg-muted"
+      )}
+    >
       <CardHeader className="p-4 border-b">
         <CardTitle className="text-base font-semibold">{title} ({clients.length})</CardTitle>
       </CardHeader>
@@ -31,9 +38,8 @@ export function KanbanColumn({ id, title, clients }: KanbanColumnProps) {
         items={clients.map(c => c.id)}
         strategy={verticalListSortingStrategy}
       >
-        <div ref={setNodeRef} className="flex-1">
-          <ScrollArea className="h-[calc(100vh-200px)]">
-            <CardContent className="p-2 space-y-2">
+        <ScrollArea className="flex-1">
+            <CardContent className="p-2 space-y-2 min-h-[100px]">
               {clients.map(client => (
                 <KanbanCard key={client.id} client={client} />
               ))}
@@ -44,7 +50,6 @@ export function KanbanColumn({ id, title, clients }: KanbanColumnProps) {
               )}
             </CardContent>
           </ScrollArea>
-        </div>
       </SortableContext>
     </Card>
   );
