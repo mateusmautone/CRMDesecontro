@@ -3,7 +3,7 @@
 import type { ReactNode } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, Users, Briefcase, PanelLeft } from "lucide-react"
+import { LayoutDashboard, Users, Briefcase, PanelLeft, Kanban } from "lucide-react"
 
 import {
   Sidebar,
@@ -29,6 +29,7 @@ const navItems: NavItem[] = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/clients", label: "Clientes", icon: Users },
   { href: "/negotiations", label: "Negociações", icon: Briefcase },
+  { href: "/leads", label: "Leads", icon: Kanban },
 ]
 
 export function AppShell({ children }: { children: ReactNode }) {
