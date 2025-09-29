@@ -42,8 +42,8 @@ export function KanbanCard({ client, isOverlay }: KanbanCardProps) {
       {...attributes}
       className={cn(
         "bg-card text-card-foreground p-0 relative",
-        isDragging && "opacity-50",
-        isOverlay && "z-50 shadow-lg"
+        isDragging && "opacity-50 z-50",
+        isOverlay && "z-50 shadow-lg !opacity-100"
       )}
     >
       <CardContent className="p-3">

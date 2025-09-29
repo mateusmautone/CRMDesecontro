@@ -25,6 +25,7 @@ const clientStatuses: ClientStatus[] = ['Lead', 'Contactado', 'Negociando', 'Gan
 export function KanbanBoard() {
   const [clients, setClients] = useState<Client[]>(CLIENTS);
   const [activeClient, setActiveClient] = useState<Client | null>(null);
+  const [overColumnId, setOverColumnId] = useState<string | null>(null);
 
   const columns = useMemo(() => clientStatuses.map(status => ({
     id: status,
@@ -48,14 +49,24 @@ export function KanbanBoard() {
 
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
-    if (!over || active.id === over.id) return;
+    if (!over) {
+      setOverColumnId(null);
+      return;
+    };
   
     const activeId = active.id;
     const overId = over.id;
-    
+
     const isOverAColumn = over.data.current?.type === 'Column';
 
     if (isOverAColumn) {
+      setOverColumnId(overId as string);
+    } else {
+      const overParentColumn = over.data.current?.sortable?.containerId;
+      setOverColumnId(overParentColumn || null);
+    }
+
+    if (isOverAColumn && active.data.current?.sortable.containerId !== overId) {
       setClients((prev) => {
         const activeIndex = prev.findIndex((c) => c.id === activeId);
         if (activeIndex === -1 || prev[activeIndex].status === overId) {
@@ -73,6 +84,7 @@ export function KanbanBoard() {
 
   const handleDragEnd = (event: DragEndEvent) => {
     setActiveClient(null);
+    setOverColumnId(null);
   };
 
   return (
@@ -92,6 +104,7 @@ export function KanbanBoard() {
                 id={col.id}
                 title={col.title}
                 clients={clients.filter(c => c.status === col.id)}
+                isOver={overColumnId === col.id}
               />
             ))}
           </div>

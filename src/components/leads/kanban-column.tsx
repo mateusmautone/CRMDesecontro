@@ -12,10 +12,11 @@ interface KanbanColumnProps {
   id: string;
   title: string;
   clients: Client[];
+  isOver: boolean;
 }
 
-export function KanbanColumn({ id, title, clients }: KanbanColumnProps) {
-  const { setNodeRef, isOver } = useDroppable({
+export function KanbanColumn({ id, title, clients, isOver }: KanbanColumnProps) {
+  const { setNodeRef } = useDroppable({
     id,
     data: {
       type: 'Column',
@@ -27,7 +28,7 @@ export function KanbanColumn({ id, title, clients }: KanbanColumnProps) {
       ref={setNodeRef} 
       className={cn(
         "w-80 h-full flex flex-col shrink-0 bg-muted/50 transition-colors",
-        isOver && "bg-muted"
+        isOver && "bg-primary/10"
       )}
     >
       <CardHeader className="p-4 border-b">
