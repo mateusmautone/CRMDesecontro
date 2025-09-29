@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   DndContext,
   closestCorners,
@@ -25,6 +25,11 @@ const clientStatuses: ClientStatus[] = ['Lead', 'Contactado', 'Negociando', 'Gan
 export function KanbanBoard() {
   const [clients, setClients] = useState<Client[]>(CLIENTS);
   const [activeClient, setActiveClient] = useState<Client | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const columns = useMemo(() => clientStatuses.map(status => ({
     id: status,
@@ -119,6 +124,10 @@ export function KanbanBoard() {
 
     setActiveClient(null);
   };
+  
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col h-full">
