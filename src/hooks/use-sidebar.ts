@@ -1,24 +1,8 @@
-import * as React from "react"
+import { useSidebar as useSidebarFromUi } from "@/components/ui/sidebar"
 
-const SIDEBAR_COOKIE_NAME = "sidebar_state"
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
-
-type SidebarContext = {
-  isCollapsed: boolean
-  setCollapsed: (open: boolean) => void
-  openMobile: boolean
-  setOpenMobile: (open: boolean) => void
-  isMobile: boolean
-  toggleSidebar: () => void
-}
-
-export const SidebarContext = React.createContext<SidebarContext | null>(null)
-
+/**
+ * @deprecated Use `import { useSidebar } from "@/components/ui/sidebar"` instead
+ */
 export function useSidebar() {
-  const context = React.useContext(SidebarContext)
-  if (!context) {
-    throw new Error("useSidebar must be used within a SidebarProvider.")
-  }
-
-  return context
+  return useSidebarFromUi()
 }
