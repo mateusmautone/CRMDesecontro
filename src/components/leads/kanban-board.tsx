@@ -25,7 +25,6 @@ const clientStatuses: ClientStatus[] = ['Lead', 'Contactado', 'Negociando', 'Gan
 export function KanbanBoard() {
   const [clients, setClients] = useState<Client[]>(CLIENTS);
   const [activeClient, setActiveClient] = useState<Client | null>(null);
-  const [overColumnId, setOverColumnId] = useState<string | null>(null);
 
   const columns = useMemo(() => clientStatuses.map(status => ({
     id: status,
@@ -49,42 +48,76 @@ export function KanbanBoard() {
 
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
-    if (!over) {
-      setOverColumnId(null);
-      return;
-    };
+    if (!over) return;
   
     const activeId = active.id;
     const overId = over.id;
+  
+    if (activeId === overId) return;
+
+    const isActiveAClient = active.data.current?.type === 'Client';
+    const isOverAClient = over.data.current?.type === 'Client';
+
+    if (isActiveAClient && isOverAClient) {
+        setClients((prev) => {
+            const activeIndex = prev.findIndex((c) => c.id === activeId);
+            const overIndex = prev.findIndex((c) => c.id === overId);
+
+            if (prev[activeIndex].status !== prev[overIndex].status) {
+                const newClients = [...prev];
+                newClients[activeIndex] = { ...newClients[activeIndex], status: prev[overIndex].status};
+                return newClients;
+            }
+    
+            return prev;
+        });
+    }
 
     const isOverAColumn = over.data.current?.type === 'Column';
 
-    if (isOverAColumn) {
-      setOverColumnId(overId as string);
-    } else {
-      const overParentColumn = over.data.current?.sortable?.containerId;
-      setOverColumnId(overParentColumn || null);
-    }
+    if (isActiveAClient && isOverAColumn) {
+        setClients((prev) => {
+            const activeIndex = prev.findIndex((c) => c.id === activeId);
 
-    if (isOverAColumn && active.data.current?.sortable.containerId !== overId) {
-      setClients((prev) => {
-        const activeIndex = prev.findIndex((c) => c.id === activeId);
-        if (activeIndex === -1 || prev[activeIndex].status === overId) {
-          return prev;
-        }
-        
-        const updatedClient = { ...prev[activeIndex], status: overId as ClientStatus };
-        const newClients = [...prev];
-        newClients[activeIndex] = updatedClient;
-        
-        return newClients;
-      });
+            if (prev[activeIndex].status !== overId) {
+                const newClients = [...prev];
+                newClients[activeIndex] = { ...newClients[activeIndex], status: overId as ClientStatus};
+                return newClients;
+            }
+
+            return prev;
+        });
     }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over) {
+      setActiveClient(null);
+      return;
+    };
+  
+    if (active.id !== over.id) {
+        const activeContainer = active.data.current?.sortable.containerId;
+        const overContainer = over.data.current?.sortable?.containerId || over.id;
+
+        if (activeContainer !== overContainer) {
+            setClients((prev) => {
+                const activeIndex = prev.findIndex((c) => c.id === active.id);
+                if (activeIndex !== -1) {
+                    const newClients = [...prev];
+                    newClients[activeIndex] = {
+                        ...newClients[activeIndex],
+                        status: overContainer as ClientStatus,
+                    };
+                    return newClients;
+                }
+                return prev;
+            });
+        }
+    }
+
     setActiveClient(null);
-    setOverColumnId(null);
   };
 
   return (
@@ -104,7 +137,6 @@ export function KanbanBoard() {
                 id={col.id}
                 title={col.title}
                 clients={clients.filter(c => c.status === col.id)}
-                isOver={overColumnId === col.id}
               />
             ))}
           </div>
