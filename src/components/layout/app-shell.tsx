@@ -19,7 +19,6 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar"
 import { AppLogo } from "@/components/icons"
-import { Button } from "@/components/ui/button"
 
 type NavItem = {
   href: string
