@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
-import { PanelLeft } from "lucide-react"
+import { PanelLeft, ChevronsLeft, ChevronsRight } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
@@ -34,6 +34,8 @@ type SidebarContext = {
   setOpenMobile: (open: boolean) => void
   isMobile: boolean
   toggleSidebar: () => void
+  isDefaultCollapsed: boolean
+  setIsDefaultCollapsed: (collapsed: boolean) => void
 }
 
 const SidebarContext = React.createContext<SidebarContext | null>(null)
@@ -69,10 +71,11 @@ const SidebarProvider = React.forwardRef<
   ) => {
     const isMobile = useIsMobile()
     const [openMobile, setOpenMobile] = React.useState(false)
+    const [isDefaultCollapsed, setIsDefaultCollapsed] = React.useState(false);
 
     // This is the internal state of the sidebar.
     // We use openProp and setOpenProp for control from outside the component.
-    const [_open, _setOpen] = React.useState(defaultOpen)
+    const [_open, _setOpen] = React.useState(isDefaultCollapsed ? false : defaultOpen)
     const open = openProp ?? _open
     const setOpen = React.useCallback(
       (value: boolean | ((value: boolean) => boolean)) => {
@@ -88,6 +91,10 @@ const SidebarProvider = React.forwardRef<
       },
       [setOpenProp, open]
     )
+    
+    React.useEffect(() => {
+      setOpen(!isDefaultCollapsed)
+    }, [isDefaultCollapsed, setOpen])
 
     // Helper to toggle the sidebar.
     const toggleSidebar = React.useCallback(() => {
@@ -125,8 +132,10 @@ const SidebarProvider = React.forwardRef<
         openMobile,
         setOpenMobile,
         toggleSidebar,
+        isDefaultCollapsed,
+        setIsDefaultCollapsed,
       }),
-      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]
+      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar, isDefaultCollapsed, setIsDefaultCollapsed]
     )
 
     return (
@@ -168,14 +177,14 @@ const Sidebar = React.forwardRef<
     {
       side = "left",
       variant = "sidebar",
-      collapsible = "offcanvas",
+      collapsible = "icon",
       className,
       children,
       ...props
     },
     ref
   ) => {
-    const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+    const { isMobile, state, openMobile, setOpenMobile, toggleSidebar, open } = useSidebar()
 
     if (collapsible === "none") {
       return (
@@ -248,9 +257,18 @@ const Sidebar = React.forwardRef<
         >
           <div
             data-sidebar="sidebar"
-            className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
+            className="relative flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
           >
             {children}
+
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-1/2 -translate-y-1/2 z-20 h-8 w-6 bg-background text-foreground border border-border rounded-full hover:bg-muted group-data-[side=left]:right-0 group-data-[side=left]:translate-x-1/2 group-data-[side=right]:left-0 group-data-[side=right]:-translate-x-1/2"
+              onClick={toggleSidebar}
+            >
+              {open ? <ChevronsLeft className="size-4" /> : <ChevronsRight className="size-4" />}
+            </Button>
           </div>
         </div>
       </div>

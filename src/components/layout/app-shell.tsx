@@ -4,6 +4,8 @@ import type { ReactNode } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { LayoutDashboard, Users, Briefcase, PanelLeft, Kanban } from "lucide-react"
+import { useSidebar } from "@/components/ui/sidebar"
+import React from 'react'
 
 import {
   Sidebar,
@@ -23,20 +25,28 @@ type NavItem = {
   href: string
   label: string
   icon: React.ElementType
+  isDefaultCollapsed?: boolean
 }
 
 const navItems: NavItem[] = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/clients", label: "Clientes", icon: Users },
   { href: "/negotiations", label: "Negociações", icon: Briefcase },
-  { href: "/leads", label: "Leads", icon: Kanban },
+  { href: "/leads", label: "Leads", icon: Kanban, isDefaultCollapsed: true },
 ]
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname()
+  const { setIsDefaultCollapsed } = useSidebar();
+  
+  const currentNavItem = navItems.find((item) => item.href === pathname);
+
+  React.useEffect(() => {
+    setIsDefaultCollapsed(currentNavItem?.isDefaultCollapsed || false);
+  }, [pathname, setIsDefaultCollapsed, currentNavItem]);
+
 
   return (
-    <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-2">
@@ -73,12 +83,20 @@ export function AppShell({ children }: { children: ReactNode }) {
           </SidebarTrigger>
           <div className="flex-1">
             <h2 className="font-headline text-2xl font-semibold">
-              {navItems.find((item) => item.href === pathname)?.label || "Dashboard"}
+              {currentNavItem?.label || "Dashboard"}
             </h2>
           </div>
         </header>
         <main className="flex-1 p-4 sm:p-6">{children}</main>
       </SidebarInset>
+  )
+}
+
+
+export default function AppShellWrapper(props: { children: ReactNode }) {
+  return (
+    <SidebarProvider>
+      <AppShell {...props} />
     </SidebarProvider>
   )
 }
