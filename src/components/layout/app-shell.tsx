@@ -25,29 +25,22 @@ type NavItem = {
   href: string
   label: string
   icon: React.ElementType
-  isDefaultCollapsed?: boolean
 }
 
 const navItems: NavItem[] = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/clients", label: "Clientes", icon: Users },
   { href: "/negotiations", label: "Negociações", icon: Briefcase },
-  { href: "/leads", label: "Leads", icon: Kanban, isDefaultCollapsed: true },
+  { href: "/leads", label: "Leads", icon: Kanban },
 ]
 
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname()
-  const { setIsDefaultCollapsed, open, toggleSidebar } = useSidebar();
-  
-  const currentNavItem = navItems.find((item) => item.href === pathname);
-
-  React.useEffect(() => {
-    setIsDefaultCollapsed(currentNavItem?.isDefaultCollapsed || false);
-  }, [pathname, setIsDefaultCollapsed, currentNavItem]);
-
+  const { open, toggleSidebar } = useSidebar()
+  const currentNavItem = navItems.find((item) => item.href === pathname)
 
   return (
-    <div className="flex">
+    <div className="flex h-screen">
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-2">
@@ -75,17 +68,9 @@ export function AppShell({ children }: { children: ReactNode }) {
             ))}
           </SidebarMenu>
         </SidebarContent>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute top-1/2 -translate-y-1/2 z-20 h-8 w-6 bg-background text-foreground border border-border rounded-full hover:bg-muted hidden md:flex group-data-[side=left]:right-0 group-data-[side=left]:translate-x-1/2 group-data-[side=right]:left-0 group-data-[side=right]:-translate-x-1/2"
-          onClick={toggleSidebar}
-        >
-          {open ? <ChevronsLeft className="size-4" /> : <ChevronsRight className="size-4" />}
-        </Button>
       </Sidebar>
-      <SidebarInset>
-        <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6 sm:py-4">
+      <div className="flex flex-col flex-1">
+        <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background px-4 sm:px-6">
           <SidebarTrigger className="md:hidden">
             <PanelLeft className="h-5 w-5" />
             <span className="sr-only">Alternar Menu</span>
@@ -96,8 +81,8 @@ export function AppShell({ children }: { children: ReactNode }) {
             </h2>
           </div>
         </header>
-        <main className="flex-1 p-4 sm:p-6">{children}</main>
-      </SidebarInset>
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6">{children}</main>
+      </div>
     </div>
   )
 }
