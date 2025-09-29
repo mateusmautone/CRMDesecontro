@@ -3,9 +3,8 @@
 import type { ReactNode } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, Users, Briefcase, PanelLeft, Kanban, ChevronsLeft, ChevronsRight } from "lucide-react"
-import { useSidebar } from "@/components/ui/sidebar"
-import React from 'react'
+import { LayoutDashboard, Users, Briefcase, PanelLeft, Kanban } from "lucide-react"
+import { useSidebar } from "@/hooks/use-sidebar"
 
 import {
   Sidebar,
@@ -17,7 +16,6 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/sidebar"
 import { AppLogo } from "@/components/icons"
-import { Button } from "@/components/ui/button"
 
 type NavItem = {
   href: string
@@ -34,7 +32,7 @@ const navItems: NavItem[] = [
 
 export default function AppShellClient({ children }: { children: ReactNode }) {
   const pathname = usePathname()
-  const { open, toggleSidebar } = useSidebar()
+  const { isCollapsed } = useSidebar()
   const currentNavItem = navItems.find((item) => item.href === pathname)
 
   return (
@@ -43,9 +41,11 @@ export default function AppShellClient({ children }: { children: ReactNode }) {
         <SidebarHeader>
           <div className="flex items-center gap-2">
             <AppLogo className="size-8 text-primary" />
-            <span className="text-lg font-semibold text-primary group-data-[state=collapsed]:hidden">
-              Desencontro CRM
-            </span>
+            {!isCollapsed && (
+              <span className="text-lg font-semibold text-primary">
+                Desencontro CRM
+              </span>
+            )}
           </div>
         </SidebarHeader>
         <SidebarContent>
@@ -59,7 +59,7 @@ export default function AppShellClient({ children }: { children: ReactNode }) {
                 >
                   <Link href={item.href}>
                     <item.icon />
-                    <span className="group-data-[state=collapsed]:hidden">{item.label}</span>
+                    {!isCollapsed && <span>{item.label}</span>}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
