@@ -45,7 +45,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <SidebarHeader>
           <div className="flex items-center gap-2">
             <AppLogo className="size-8 text-primary" />
-            <span className="text-lg font-semibold text-primary group-data-[collapsible=icon]:hidden">
+            <span className="text-lg font-semibold text-primary group-data-[state=collapsed]:hidden">
               Desencontro CRM
             </span>
           </div>
@@ -61,7 +61,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 >
                   <Link href={item.href}>
                     <item.icon />
-                    <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
+                    <span className="group-data-[state=collapsed]:hidden">{item.label}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
