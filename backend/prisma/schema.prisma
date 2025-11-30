@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Lead {
+  id        String   @id @default(uuid())
+  name      String
+  email     String?
+  phone     String?
+  source    String?
+  status    String   @default("new") // new, contacted, qualified, lost
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  interactions Interaction[]
+  negotiations Negotiation[]
+}
+
+model Client {
+  id        String   @id @default(uuid())
+  name      String
+  email     String?
+  phone     String?
+  company   String?
+  status    String   @default("invited") // invited, conversing, negotiating, confirmed, cancelled
+  type      String   @default("other")   // thrift, dj, food, sponsorship, other
+  tags      String[] @default([])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  interactions Interaction[]
+  negotiations Negotiation[]
+}
+
+model Negotiation {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  value       Float?
+  status      String   @default("open") // open, won, lost
+  closedAt    DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  leadId   String?
+  lead     Lead?   @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  clientId String?
+  client   Client? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
+  interactions Interaction[]
+}
+
+model Interaction {
+  id        String   @id @default(uuid())
+  type      String // call, email, meeting, note
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  leadId        String?
+  lead          Lead?        @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  clientId      String?
+  client        Client?      @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  negotiationId String?
+  negotiation   Negotiation? @relation(fields: [negotiationId], references: [id], onDelete: SetNull)
+}

@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:16
+    container_name: crmdesecontro-postgres
+    environment:
+      POSTGRES_USER: crm_user
+      POSTGRES_PASSWORD: crm_pass
+      POSTGRES_DB: crmdesecontro
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ./backend
+    container_name: crmdesecontro-backend
+    environment:
+      PORT: 4000
+      CORS_ORIGIN: http://localhost:3000
+      DATABASE_URL: postgresql://crm_user:crm_pass@db:5432/crmdesecontro?schema=public
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+    # Para desenvolvimento, montar código e usar tsx seria outra opção
+    # aqui usamos a build de produção por simplicidade
+
+volumes:
+  pgdata:
