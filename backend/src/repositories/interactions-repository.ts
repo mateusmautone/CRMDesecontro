@@ -1,4 +1,5 @@
 import { prisma } from "../lib/prisma.js";
+import type { Prisma } from "@prisma/client";
 
 export type InteractionCreateInput = {
   type: string; // call, email, meeting, note
@@ -16,7 +17,7 @@ export class InteractionsRepository {
     leadId?: string;
     negotiationId?: string;
   }) {
-    const where: any = {};
+    const where: Prisma.InteractionWhereInput = {};
     if (filters?.clientId) where.clientId = filters.clientId;
     if (filters?.leadId) where.leadId = filters.leadId;
     if (filters?.negotiationId) where.negotiationId = filters.negotiationId;
