@@ -13,7 +13,7 @@ export function createApp() {
   const origins = process.env.CORS_ORIGIN?.split(",").map((s) => s.trim());
   app.use(
     cors({
-      origin: origins && origins.length > 0 ? origins : "*",
+      origin: origins && origins.length > 0 ? origins : true,
       credentials: true,
     })
   );
