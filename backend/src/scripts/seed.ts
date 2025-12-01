@@ -90,43 +90,67 @@ const SAMPLE_CLIENTS = [
 async function main() {
   console.log("Seeding leads...");
   for (const lead of SAMPLE_LEADS) {
-    await prisma.lead.upsert({
-      where: {
-        email:
-          lead.email ??
-          `${lead.name.toLowerCase().replace(/\s+/g, "-")}-noemail@example.com`,
-      },
-      update: {},
-      create: {
-        name: lead.name,
-        email: lead.email ?? null,
-        phone: lead.phone ?? null,
-        source: lead.source ?? null,
-        status: lead.status,
-      },
-    });
+    const email = lead.email;
+    if (email) {
+      const existing = await prisma.lead.findFirst({
+        where: { email },
+      });
+      if (!existing) {
+        await prisma.lead.create({
+          data: {
+            name: lead.name,
+            email: lead.email ?? null,
+            phone: lead.phone ?? null,
+            source: lead.source ?? null,
+            status: lead.status,
+          },
+        });
+      }
+    } else {
+      await prisma.lead.create({
+        data: {
+          name: lead.name,
+          email: null,
+          phone: lead.phone ?? null,
+          source: lead.source ?? null,
+          status: lead.status,
+        },
+      });
+    }
   }
   console.log("Seeding clients...");
   for (const client of SAMPLE_CLIENTS) {
-    await prisma.client.upsert({
-      where: {
-        email:
-          client.email ??
-          `${client.name
-            .toLowerCase()
-            .replace(/\s+/g, "-")}-noemail@example.com`,
-      },
-      update: {},
-      create: {
-        name: client.name,
-        email: client.email ?? null,
-        phone: client.phone ?? null,
-        company: client.company ?? null,
-        status: client.status,
-        type: client.type,
-        tags: client.tags,
-      },
-    });
+    const email = client.email;
+    if (email) {
+      const existing = await prisma.client.findFirst({
+        where: { email },
+      });
+      if (!existing) {
+        await prisma.client.create({
+          data: {
+            name: client.name,
+            email: client.email ?? null,
+            phone: client.phone ?? null,
+            company: client.company ?? null,
+            status: client.status,
+            type: client.type,
+            tags: client.tags,
+          },
+        });
+      }
+    } else {
+      await prisma.client.create({
+        data: {
+          name: client.name,
+          email: null,
+          phone: client.phone ?? null,
+          company: client.company ?? null,
+          status: client.status,
+          type: client.type,
+          tags: client.tags,
+        },
+      });
+    }
   }
   console.log("Seed finalizado.");
 }
