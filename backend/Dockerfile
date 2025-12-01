@@ -55,7 +55,7 @@ COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/prisma ./prisma
 
 # Copy .env.example if needed, but prefer env vars in Cloud Run
-COPY .env.example ./.env.example
+
 
 EXPOSE 4000
 CMD ["node", "dist/server.js"]
