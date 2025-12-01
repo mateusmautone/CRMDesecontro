@@ -1,123 +1,185 @@
-🎯 CRM Desencontro – Sistema de Gestão de Relacionamento para o evento Desencontro
+# 🎯 CRM Desencontro – Sistema de Gestão de Relacionamento com Clientes e Parceiros  
 
-Projeto de TCC para gestão de leads, clientes, parceiros e interações referentes ao evento “Desencontro”.
+Sistema web desenvolvido por **Mateus Moraes Mautone** para gerenciar **clientes, leads, conversas e negociações** relacionadas ao evento **Desencontro**, centralizando dados e otimizando o relacionamento com **patrocinadores, expositores e parceiros**.  
 
-✅ Status do Projeto
+---
 
-Backend: implementado com Node.js + Express + ORM (Prisma) + PostgreSQL
+## 🚀 Status do Projeto
+✅ Backend: 100% implementado (Node.js + Express + Prisma ORM + PostgreSQL)  
+✅ Frontend: 100% implementado (React + Vite + TailwindCSS)  
+✅ Banco de Dados: Estrutura completa com entidades relacionadas (clientes, leads, interações, parcerias)  
+✅ API REST: CRUD completo via Express  
+✅ Interface: Dashboard e telas responsivas  
+✅ Autenticação: Em desenvolvimento (baseada em tokens de sessão ou JWT)  
+✅ Deploy: Versão hospedada no Google Cloud Run  
 
-Frontend: implementado com React + Vite + TailwindCSS
+🔗 **Acesse o Sistema:** [crm-frontend-7rhknnd52q-uc.a.run.app](https://crm-frontend-7rhknnd52q-uc.a.run.app)  
 
-Banco de Dados: estrutura com entidades relacionadas (clientes, leads, interações, negociações)
+---
 
-Deploy: versão da aplicação hospedada — frontend público no Cloud Run / link: https://crm-frontend-7rhknnd52q-uc.a.run.app/
+## 🎯 Funcionalidades Implementadas
 
-Funcionalidades principais disponíveis: CRUD de clientes/leads, registro de interações, controle de negociações, dashboard analítico, interface responsiva.
+### 👥 Gestão de Clientes e Leads
+- Cadastro, edição e exclusão de clientes  
+- Visualização detalhada de cada lead  
+- Filtros por status e tipo de parceiro  
 
-🧰 Tecnologias Utilizadas
+### 💬 Registro de Conversas e Interações
+- Histórico de conversas com cada cliente  
+- Registro de reuniões, ligações e e-mails  
+- Visualização cronológica das interações  
 
-Backend
+### 🤝 Controle de Negociações e Parcerias
+- Cadastro de novas negociações  
+- Controle de status (em andamento, fechado, cancelado)  
+- Histórico de movimentações de cada lead  
 
-Node.js
+### 📊 Dashboard Analítico
+- Visualização geral dos leads e interações  
+- Gráficos interativos e estatísticas rápidas  
+- Painel consolidado com métricas do evento  
 
-Express.js
+---
 
-Prisma ORM
+## 🧠 Arquitetura do Sistema
+O sistema segue o padrão **cliente-servidor**, com arquitetura **MVC no backend** e **componentização no frontend**.
 
-PostgreSQL
+~~~mermaid
+graph LR
+A[Usuário (Administrador do Evento)] --> B[Frontend React/Vite]
+B --> C[API REST - Node.js/Express]
+C --> D[(PostgreSQL via Prisma ORM)]
+~~~
 
-Frontend
+**Modelos C4**  
+- **Contexto:** CRM voltado ao evento Desencontro, atendendo administradores e parceiros.  
+- **Contêineres:** Frontend (React/Vite), Backend (Node.js/Express), Banco (PostgreSQL).  
+- **Componentes:** Módulos de cadastro, interações, negociações e dashboard.  
 
-React (via Vite)
+---
 
-TailwindCSS
+## 🛠️ Stack Tecnológica
 
-React Router (para roteamento)
+### Backend
+- **Linguagem:** JavaScript (Node.js)  
+- **Framework:** Express.js  
+- **ORM:** Prisma ORM  
+- **Banco de Dados:** PostgreSQL  
+- **Arquitetura:** MVC  
+- **Segurança:** Validação contra SQL Injection, criptografia de dados sensíveis  
 
-Axios (requisições HTTP)
+### Frontend
+- **Framework:** React.js (Vite)  
+- **Estilização:** TailwindCSS  
+- **Roteamento:** React Router DOM  
+- **Requisições:** Axios  
+- **Gráficos:** Recharts  
+- **Gerenciamento de Estado:** React Hooks / Context API  
 
-Bibliotecas adicionais conforme necessidade (se houver)
+### Infraestrutura
+- **Deploy:** Google Cloud Run (Frontend e Backend)  
+- **Banco:** Cloud SQL (PostgreSQL)  
+- **Controle de versão:** Git + GitHub  
 
-Infraestrutura / Deploy
+---
 
-Hospedagem no Cloud Run (ou serviço de nuvem compatível)
+## ⚙️ Requisitos de Software
 
-Banco de dados PostgreSQL (local ou via serviço gerenciado)
+**Funcionais (RF):**
+- RF01: Cadastro e gerenciamento de clientes/leads  
+- RF02: Registro de conversas/interações  
+- RF03: Controle de negociações/parcerias  
+- RF04: Exibição de dashboard com informações rápidas  
 
-Git + GitHub (controle de versão)
+**Não Funcionais (RNF):**
+- RNF01: Carregamento de páginas < 2 segundos  
+- RNF02: Compatibilidade com navegadores modernos  
+- RNF03: Suporte para até 100 usuários simultâneos  
 
-🎯 Funcionalidades Principais
+---
 
-Gestão de Clientes/Leads — cadastro, edição, visualização e remoção; listagem de leads/clientes.
+## 🎨 Interface do Usuário
 
-Registro de Interações — histórico de conversas, reuniões, e-mails, visitas etc; registro de data, tipo e observações.
+**Páginas Principais**
+- Login (em desenvolvimento)  
+- Dashboard com métricas gerais  
+- Tabela de Clientes e Leads  
+- Histórico de Interações  
+- Módulo de Negociações  
 
-Negociações / Parcerias — controle de status de negociações ou parcerias com clientes/leads; visualização de histórico.
+**Componentes**
+- Cards dinâmicos para leads  
+- Modal de edição e exclusão  
+- Gráficos analíticos  
+- Layout responsivo e intuitivo  
 
-Dashboard e Visão Analítica — visão consolidada de leads, interações e negociações; métricas gerais (ex: número de leads, status, interações etc).
+---
 
-Interface Responsiva — layout que se adapta a diferentes tamanhos de tela, facilitando uso em desktops, tablets e mobile.
+## 🔐 Segurança
+- Autenticação via token (JWT em desenvolvimento)  
+- Criptografia de dados sensíveis no PostgreSQL  
+- Proteção contra SQL Injection com Prisma  
+- Validação de inputs no backend  
 
-📂 Estrutura do Projeto
-/backend      → Código do servidor (Express + Prisma + rotas de API)  
-/frontend     → Código da interface (React + Vite + TailwindCSS)  
-/database    → Scripts / migrations (se houver) para configurar PostgreSQL  
-README.md     → Documentação do projeto  
-.env.example  → Exemplo de variáveis de ambiente (backend e frontend)  
+---
 
+## ▶️ Como Executar Localmente
 
-Nota: dependências listadas no package.json / package-lock.json (frontend e backend), garantindo fácil setup.
+### 1. Pré-requisitos
+- Node.js 18+  
+- PostgreSQL 15+  
+- npm ou yarn  
+- Git  
 
-🚀 Como Executar Localmente
-Pré-requisitos
+### 2. Clone o Repositório
+~~~bash
+git clone https://github.com/mateusmautone/CRMDesecontro.git
+cd CRMDesecontro
+~~~
 
-Node.js (versão 18+ recomendada)
+### 3. Backend
+~~~bash
+cd backend
+npm install
+npx prisma migrate dev
+npm run dev
+~~~
+> Backend disponível em: [http://localhost:3001](http://localhost:3001)
 
-PostgreSQL (versão 12+ ou usar container via Docker)
+### 4. Frontend
+~~~bash
+cd ../frontend
+npm install
+npm run dev
+~~~
+> Frontend disponível em: [http://localhost:5173](http://localhost:5173)
 
-Git
+---
 
-Passos
-# Clone o repositório
-git clone https://github.com/mateusmautone/CRMDesecontro.git  
-cd CRMDesecontro  
+## 🗓️ Cronograma de Desenvolvimento
 
-# Backend
-cd backend  
-npm install  
-# configurar variáveis de ambiente (.env) com dados do banco  
-npx prisma migrate dev   # para criar banco + tabelas  
-npm run dev              # inicia servidor backend (ex: localhost:3001)  
+| Fase          | Entrega       | Descrição                                   |
+|---------------|---------------|---------------------------------------------|
+| Junho/2025    | 15/06/2025    | Protótipo com cadastro e dashboard          |
+| Julho/2025    | 31/07/2025    | Implementação de negociações e interações   |
+| Setembro/2025 | 15/09/2025    | Entrega do Portfólio I                      |
+| Novembro/2025 | 30/11/2025    | Ajustes finais e Portfólio II               |
 
-# Frontend
-cd ../frontend  
-npm install  
-npm run dev              # inicia servidor frontend (ex: localhost:5173)  
+---
 
+## 📚 Referências
+- [React.js Documentation](https://react.dev)  
+- [Express.js Documentation](https://expressjs.com)  
+- [Prisma ORM Docs](https://www.prisma.io/docs)  
+- [PostgreSQL Docs](https://www.postgresql.org/docs/)  
 
-Depois, abra no navegador a URL onde o frontend está rodando. A interface deve se comunicar com a API do backend automaticamente.
+---
 
-📄 Modelo de Dados (Entidades Principais)
+## 🧾 Sobre o Projeto
+**CRM Desencontro** é um projeto desenvolvido como **Trabalho de Conclusão de Curso (TCC)** no curso de **Engenharia de Software** do **Centro Universitário Católica de Santa Catarina – Joinville**.  
 
-User — representando administradores ou usuários do sistema (se existir login/autenticação)
+**Autor:** Mateus Moraes Mautone  
+**Orientador:** Diogo Winck 
+**Ano:** 2025  
 
-Client / Lead — clientes, expositores ou prospects relacionados ao evento Desencontro
-
-Interaction — registro de interações com leads/clients (reuniões, ligações, e-mails, visitas etc)
-
-Negotiation / Partnership — negociações ou parcerias em andamento, com status configurável e histórico de mudanças
-
-A estrutura exata de tabelas e campos pode ser vista no schema do Prisma
-
-💡 Motivo / Objetivo do Projeto
-
-O CRM Desencontro surge da necessidade de organizar de forma centralizada e estruturada os contatos, negociações e histórico de conversas com expositores, patrocinadores e parceiros do evento Desencontro.
-Com isso, o sistema ajuda a manter o controle do pipeline de parcerias, histórico de interações e dados relevantes para execução e planejamento dos próximos eventos.
-
-📝 Sobre este Repositório
-
-Autor: Mateus Moraes Mautone
-
-Contexto: Trabalho de Conclusão de Curso — Engenharia de Software
-
-Repositório público: https://github.com/mateusmautone/CRMDesecontro
+📍 *O sistema evolui junto com o evento Desencontro, podendo futuramente incluir áreas contábeis, relatórios financeiros e integrações externas.*
