@@ -1,3 +1,5 @@
+"use client";
+
 import { ClientList } from "@/components/clients/client-list";
 import { NewClientButton } from "@/components/clients/new-client-button";
 import { useState } from "react";
