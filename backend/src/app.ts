@@ -10,10 +10,17 @@ export function createApp() {
 
   const app = express();
 
-  const origins = process.env.CORS_ORIGIN?.split(",").map((s) => s.trim());
+  const rawOrigins = process.env.CORS_ORIGIN?.split(",")
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0);
+
   app.use(
     cors({
-      origin: origins && origins.length > 0 ? origins : true,
+      origin: rawOrigins?.includes("*")
+        ? true
+        : rawOrigins && rawOrigins.length > 0
+        ? rawOrigins
+        : true,
       credentials: true,
     })
   );
@@ -36,7 +43,10 @@ export function createApp() {
   const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
     // eslint-disable-next-line no-console
     console.error(err);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ 
+      error: "Internal Server Error", 
+      details: err instanceof Error ? err.message : String(err) 
+    });
   };
   app.use(errorHandler);
 
