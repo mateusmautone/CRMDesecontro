@@ -16,13 +16,18 @@ COPY package.json tsconfig.json ./
 COPY prisma ./prisma
 
 # Install all dependencies (including dev) to build
-RUN npm install
+RUN npm install --production=false
 
 # Generate Prisma Client
 RUN npx prisma generate
 
 # ---- Build ----
 FROM base AS build
+# Install openssl for Prisma (needed if build script runs prisma generate)
+RUN apt-get update -y && apt-get install -y --no-install-recommends \
+    openssl \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/prisma ./prisma
 COPY package.json tsconfig.json ./
