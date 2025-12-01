@@ -1,26 +1,26 @@
-name: CI
+name: SonarQube Scan
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    types: [opened, synchronize, reopened]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.x]
-
+  sonarqube:
+    name: SonarQube Analysis
+    runs-on: windows-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '20.x'
           cache: 'npm'
 
       - name: Install backend dependencies
@@ -32,12 +32,6 @@ jobs:
         run: |
           npm test -- --coverage --coverageDirectory=coverage --watchAll=false
 
-      - name: Upload backend coverage
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-coverage
-          path: backend/coverage
-
       - name: Install frontend dependencies
         working-directory: frontend
         run: npm ci
@@ -46,21 +40,6 @@ jobs:
         working-directory: frontend
         run: |
           npx jest --config jest.config.cjs --coverage --coverageDirectory=coverage --watchAll=false
-
-      - name: Upload frontend coverage
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-coverage
-          path: frontend/coverage
-
-      - name: Upload combined coverage (optional)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: all-coverage-archives
-          path: |
-            backend/coverage
-            frontend/coverage
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v2.1.0
