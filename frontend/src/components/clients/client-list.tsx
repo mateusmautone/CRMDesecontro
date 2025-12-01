@@ -34,7 +34,6 @@ import type {
   ClientType,
   Interaction,
 } from "@/lib/types";
-import { CLIENTS } from "@/lib/data"; // fallback inicial apenas para clientes se API falhar
 import {
   listClients,
   createClient,
