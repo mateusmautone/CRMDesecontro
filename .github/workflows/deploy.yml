@@ -1,0 +1,200 @@
+name: CI/CD - Deploy to Google Cloud
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "frontend/**"
+      - "backend/**"
+      - ".github/workflows/**"
+  workflow_dispatch: {}
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect changes
+        id: filter
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+
+  # =================================================================================================
+  # BACKEND JOBS
+  # =================================================================================================
+
+  build-backend:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.backend == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    env:
+      REGISTRY: ${{ secrets.ARTIFACT_REGISTRY_HOST }}
+      GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
+      GCP_BACKEND_REPOSITORY: ${{ secrets.GCP_BACKEND_REPOSITORY }}
+      GCP_REGION: ${{ secrets.GCP_REGION }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker --quiet $REGISTRY
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push backend container
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.GCP_BACKEND_REPOSITORY }}/crm-backend:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy-backend:
+    needs: build-backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Deploy to Cloud Run (backend)
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: crm-backend
+          flags: '--allow-unauthenticated'
+          image: ${{ secrets.ARTIFACT_REGISTRY_HOST }}/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_BACKEND_REPOSITORY }}/crm-backend:${{ github.sha }}
+          region: ${{ secrets.GCP_REGION }}
+          project_id: ${{ secrets.GCP_PROJECT }}
+          env_vars: |-
+            NODE_ENV=production
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+
+      - name: Run Prisma migrations on Cloud Run Job
+        run: |
+          echo "Updating/Creating Cloud Run Job for migrations..."
+          gcloud run jobs update crm-backend-migrate \
+            --region ${{ secrets.GCP_REGION }} \
+            --image ${{ secrets.ARTIFACT_REGISTRY_HOST }}/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_BACKEND_REPOSITORY }}/crm-backend:${{ github.sha }} \
+            --set-env-vars CLOUD_SQL_CONNECTION_NAME=${{ secrets.CLOUD_SQL_CONNECTION_NAME }} \
+            --set-env-vars DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            || gcloud run jobs create crm-backend-migrate \
+            --region ${{ secrets.GCP_REGION }} \
+            --image ${{ secrets.ARTIFACT_REGISTRY_HOST }}/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_BACKEND_REPOSITORY }}/crm-backend:${{ github.sha }} \
+            --set-cloudsql-instances ${{ secrets.CLOUD_SQL_CONNECTION_NAME }} \
+            --set-env-vars CLOUD_SQL_CONNECTION_NAME=${{ secrets.CLOUD_SQL_CONNECTION_NAME }} \
+            --set-env-vars DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            --max-retries 0
+
+          echo "Executing migration job..."
+          gcloud run jobs execute crm-backend-migrate --region ${{ secrets.GCP_REGION }} --wait
+
+  # =================================================================================================
+  # FRONTEND JOBS
+  # =================================================================================================
+
+  build-frontend:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.frontend == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    env:
+      REGISTRY: ${{ secrets.ARTIFACT_REGISTRY_HOST }}
+      GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
+      GCP_FRONTEND_REPOSITORY: ${{ secrets.GCP_FRONTEND_REPOSITORY }}
+      GCP_REGION: ${{ secrets.GCP_REGION }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker --quiet $REGISTRY
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build & push frontend container
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.GCP_FRONTEND_REPOSITORY }}/crm-frontend:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+            NEXT_PUBLIC_USE_BACKEND=${{ secrets.NEXT_PUBLIC_USE_BACKEND }}
+            NODE_ENV=production
+
+  deploy-frontend:
+    needs: build-frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Deploy to Cloud Run (frontend)
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: crm-frontend
+          image: ${{ secrets.ARTIFACT_REGISTRY_HOST }}/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_FRONTEND_REPOSITORY }}/crm-frontend:${{ github.sha }}
+          region: ${{ secrets.GCP_REGION }}
+          project_id: ${{ secrets.GCP_PROJECT }}
+          flags: '--memory 1Gi --allow-unauthenticated'
+          env_vars: |-
+            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+            NEXT_PUBLIC_USE_BACKEND=${{ secrets.NEXT_PUBLIC_USE_BACKEND }}
+            CLOUD_SQL_CONNECTION_NAME=${{ secrets.CLOUD_SQL_CONNECTION_NAME }}
+            NODE_ENV=production
+
+  summary:
+    needs: [deploy-backend, deploy-frontend]
+    if: always()
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deployment summary
+        run: |
+          echo "Backend deployed: ${{ needs.deploy-backend.result }}"
+          echo "Frontend deployed: ${{ needs.deploy-frontend.result }}"
