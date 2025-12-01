@@ -20,7 +20,7 @@ Copie `.env.example` para `.env` e ajuste:
 ```
 PORT=4000
 CORS_ORIGIN=http://localhost:3000
-DATABASE_URL=postgresql://crm_user:crm_pass@localhost:5432/crmdesecontro?schema=public
+# DATABASE_URL=postgresql://crm_user:replace_with_secure_password@localhost:5432/crmdesecontro?schema=public
 ```
 
 ## Rodar localmente (sem Docker)

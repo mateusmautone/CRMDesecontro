@@ -21,9 +21,10 @@ docker compose -f docker-compose.dev.yml down
 
 ## Serviços
 - API: `http://localhost:4000`
-- Postgres: `localhost:5432` (usuário `crm_user`, senha `crm_pass`, DB `crmdesecontro`)
+- Postgres: `localhost:5432` (configure usuário/senha em `.env`)
 
-A API consome `DATABASE_URL=postgresql://crm_user:crm_pass@db:5432/crmdesecontro?schema=public` dentro da rede do compose.
+A API consome a `DATABASE_URL` definida no arquivo de ambiente (ex.: `.env`).
+Crie um `.env` a partir de `.env.example` e ajuste os valores de conexão antes de subir o Compose.
 
 ## Testar
 
