@@ -35,7 +35,8 @@ describe('clients routes', () => {
 
   it('GET /api/:id returns 404 if not found', async () => {
     mockMethods.findById.mockResolvedValueOnce(null);
-    await request(buildApp()).get('/api/1').expect(404);
+    const res = await request(buildApp()).get('/api/1').expect(404);
+    expect(res.status).toBe(404);
   });
 
   it('POST /api/ returns 201 when valid', async () => {
@@ -57,6 +58,7 @@ describe('clients routes', () => {
 
   it('DELETE /api/:id returns 204 on success', async () => {
     mockMethods.delete.mockResolvedValueOnce(undefined);
-    await request(buildApp()).delete('/api/1').expect(204);
+    const res = await request(buildApp()).delete('/api/1').expect(204);
+    expect(res.status).toBe(204);
   });
 });

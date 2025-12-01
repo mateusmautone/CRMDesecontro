@@ -37,7 +37,8 @@ describe('interactions routes', () => {
 
   it('PATCH /api/:id returns 404 when update throws', async () => {
     mockMethods.update.mockImplementationOnce(() => { throw new Error('no'); });
-    await request(buildApp()).patch('/api/1').send({ content: 'x' }).expect(404);
+    const res = await request(buildApp()).patch('/api/1').send({ content: 'x' }).expect(404);
+    expect(res.status).toBe(404);
   });
 
   it('DELETE /api/:id returns 204 on success', async () => {
