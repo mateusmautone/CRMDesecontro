@@ -11,8 +11,19 @@ export function createApp() {
   const app = express();
 
   const rawOrigins = process.env.CORS_ORIGIN?.split(",")
-    .map((s) => s.trim())
+    .map((s) => s.trim().replace(/['"]/g, "")) // Remove quotes if present
     .filter((s) => s.length > 0);
+
+  console.log("CORS Configuration:", {
+    rawEnv: process.env.CORS_ORIGIN,
+    parsedOrigins: rawOrigins,
+    usingReflect: rawOrigins?.includes("*") || !rawOrigins || rawOrigins.length === 0
+  });
+
+  app.use((req, _res, next) => {
+    console.log(`Incoming Request: ${req.method} ${req.path} | Origin: ${req.headers.origin}`);
+    next();
+  });
 
   app.use(
     cors({
