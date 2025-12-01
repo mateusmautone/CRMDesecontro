@@ -2,6 +2,7 @@ import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   output: 'standalone',
+  // Force frontend deploy
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,
