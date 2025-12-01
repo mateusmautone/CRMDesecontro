@@ -89,7 +89,7 @@ jobs:
         uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: crm-backend
-          flags: '--allow-unauthenticated'
+          flags: '--allow-unauthenticated --add-cloudsql-instances=${{ secrets.CLOUD_SQL_CONNECTION_NAME }}'
           image: ${{ secrets.ARTIFACT_REGISTRY_HOST }}/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_BACKEND_REPOSITORY }}/crm-backend:${{ github.sha }}
           region: ${{ secrets.GCP_REGION }}
           project_id: ${{ secrets.GCP_PROJECT }}
