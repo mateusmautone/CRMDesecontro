@@ -21,7 +21,6 @@ import {
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import { CLIENTS } from "@/lib/data";
 import type { Client, ClientStatus } from "@/lib/types";
 import { listLeads, type LeadDTO } from "@/lib/api/leads";
 import { KanbanColumn } from "./kanban-column";
@@ -50,7 +49,7 @@ function mapLeadStatusToClientStatus(status: string): ClientStatus {
 }
 
 export function KanbanBoard() {
-  const [clients, setClients] = useState<Client[]>(CLIENTS);
+  const [clients, setClients] = useState<Client[]>([]);
   const [activeClient, setActiveClient] = useState<Client | null>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [columns, setColumns] = useState<KanbanColumnConfig[]>([]);
@@ -61,7 +60,17 @@ export function KanbanBoard() {
     async function loadLeads() {
       try {
         const leads = await listLeads();
-        if (!leads || leads.length === 0) return;
+        if (!leads || leads.length === 0) {
+           // Se não tiver leads, inicializa colunas padrão
+           setColumns([
+             { id: "Convidado", title: "Convidado" },
+             { id: "Em conversa", title: "Em conversa" },
+             { id: "Em negociação", title: "Em negociação" },
+             { id: "Confirmado", title: "Confirmado" },
+             { id: "Cancelado", title: "Cancelado" },
+           ]);
+           return;
+        }
 
         const mapped: Client[] = leads.map((lead: LeadDTO) => ({
           id: lead.id,
@@ -82,29 +91,27 @@ export function KanbanBoard() {
         }));
 
         setClients(mapped);
+        
+        // Inicializa colunas baseadas nos status encontrados + padrões se necessário
+        const uniqueStatuses = Array.from(new Set(mapped.map((c) => c.status)));
+        // Garante que tenhamos pelo menos algumas colunas padrão se os dados forem escassos
+        const defaultStatuses = ["Convidado", "Em conversa", "Em negociação", "Confirmado", "Cancelado"];
+        const allStatuses = Array.from(new Set([...defaultStatuses, ...uniqueStatuses]));
+        
+        setColumns(
+          allStatuses.map((status) => ({
+            id: status,
+            title: status,
+          }))
+        );
+
       } catch (err) {
-        // Fallback silencioso: mantém CLIENTS mockados
         console.error("Erro ao carregar leads da API", err);
       }
     }
 
     loadLeads();
-  }, []);
-
-  useEffect(() => {
-    // Inicializa colunas a partir do snapshot inicial dos clientes.
-    // Depois disso, as colunas vivem independentes dos cards.
-    const uniqueStatuses = Array.from(
-      new Set(CLIENTS.map((c) => c.status))
-    );
-    setColumns(
-      uniqueStatuses.map((status) => ({
-        id: status,
-        title: status,
-      }))
-    );
     setIsMounted(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const sensors = useSensors(
