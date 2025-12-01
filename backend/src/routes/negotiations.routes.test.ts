@@ -33,16 +33,19 @@ describe('negotiations routes', () => {
   });
 
   it('POST /api/ returns 400 on invalid', async () => {
-    await request(buildApp()).post('/api/').send({}).expect(400);
+    const res = await request(buildApp()).post('/api/').send({}).expect(400);
+    expect(res.status).toBe(400);
   });
 
   it('PATCH /api/:id returns 404 when update throws', async () => {
     mockMethods.update.mockImplementationOnce(() => { throw new Error('no'); });
-    await request(buildApp()).patch('/api/1').send({ status: 'won' }).expect(404);
+    const res = await request(buildApp()).patch('/api/1').send({ status: 'won' }).expect(404);
+    expect(res.status).toBe(404);
   });
 
   it('DELETE /api/:id returns 204 on success', async () => {
     mockMethods.delete.mockResolvedValueOnce(undefined);
-    await request(buildApp()).delete('/api/1').expect(204);
+    const res = await request(buildApp()).delete('/api/1').expect(204);
+    expect(res.status).toBe(204);
   });
 });

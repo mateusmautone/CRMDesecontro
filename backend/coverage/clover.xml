@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1764620100342" clover="3.2.0">
-  <project timestamp="1764620100343" name="All files">
+<coverage generated="1764627444824" clover="3.2.0">
+  <project timestamp="1764627444824" name="All files">
     <metrics statements="218" coveredstatements="190" conditionals="43" coveredconditionals="23" methods="50" coveredmethods="45" elements="311" coveredelements="258" complexity="0" loc="218" ncloc="218" packages="4" files="11" classes="11"/>
     <package name="src">
       <metrics statements="28" coveredstatements="28" conditionals="11" coveredconditionals="3" methods="7" coveredmethods="7"/>
@@ -51,16 +51,16 @@
       <file name="interactions-repository.ts" path="C:\Users\leila\OneDrive\Área de Trabalho\CRMDesecontro\backend\src\repositories\interactions-repository.ts">
         <metrics statements="11" coveredstatements="11" conditionals="6" coveredconditionals="6" methods="5" coveredmethods="5"/>
         <line num="1" count="1" type="stmt"/>
-        <line num="13" count="1" type="stmt"/>
-        <line num="19" count="4" type="stmt"/>
-        <line num="20" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="20" count="4" type="stmt"/>
         <line num="21" count="4" type="cond" truecount="2" falsecount="0"/>
         <line num="22" count="4" type="cond" truecount="2" falsecount="0"/>
-        <line num="23" count="4" type="stmt"/>
-        <line num="29" count="1" type="stmt"/>
-        <line num="32" count="1" type="stmt"/>
-        <line num="35" count="1" type="stmt"/>
-        <line num="38" count="1" type="stmt"/>
+        <line num="23" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="24" count="4" type="stmt"/>
+        <line num="30" count="1" type="stmt"/>
+        <line num="33" count="1" type="stmt"/>
+        <line num="36" count="1" type="stmt"/>
+        <line num="39" count="1" type="stmt"/>
       </file>
       <file name="leads-repository.ts" path="C:\Users\leila\OneDrive\Área de Trabalho\CRMDesecontro\backend\src\repositories\leads-repository.ts">
         <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="5" coveredmethods="5"/>

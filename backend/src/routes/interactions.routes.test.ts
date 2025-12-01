@@ -32,7 +32,8 @@ describe('interactions routes', () => {
   });
 
   it('POST /api/ returns 400 on invalid body', async () => {
-    await request(buildApp()).post('/api/').send({}).expect(400);
+    const res = await request(buildApp()).post('/api/').send({}).expect(400);
+    expect(res.status).toBe(400);
   });
 
   it('PATCH /api/:id returns 404 when update throws', async () => {
@@ -43,6 +44,7 @@ describe('interactions routes', () => {
 
   it('DELETE /api/:id returns 204 on success', async () => {
     mockMethods.delete.mockResolvedValueOnce(undefined);
-    await request(buildApp()).delete('/api/1').expect(204);
+    const res = await request(buildApp()).delete('/api/1').expect(204);
+    expect(res.status).toBe(204);
   });
 });
