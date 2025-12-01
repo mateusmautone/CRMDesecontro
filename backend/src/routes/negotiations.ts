@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
-import { NegotiationsRepository } from "../repositories/negotiations-repository";
+import { NegotiationsRepository } from "../repositories/negotiations-repository.js";
 
 const router = Router();
 const repo = new NegotiationsRepository();

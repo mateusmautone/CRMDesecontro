@@ -1,8 +1,8 @@
 import { Router } from "express";
-import leads from "./leads";
-import clients from "./clients";
-import negotiations from "./negotiations";
-import interactions from "./interactions";
+import leads from "./leads.js";
+import clients from "./clients.js";
+import negotiations from "./negotiations.js";
+import interactions from "./interactions.js";
 
 const router = Router();
 

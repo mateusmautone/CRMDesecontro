@@ -1,4 +1,4 @@
-import { prisma } from "../lib/prisma";
+import { prisma } from "../lib/prisma.js";
 
 // Seed mínimo baseado nos mocks do frontend
 const SAMPLE_LEADS = [

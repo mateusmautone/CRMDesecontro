@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
-import { InteractionsRepository } from "../repositories/interactions-repository";
+import { InteractionsRepository } from "../repositories/interactions-repository.js";
 
 const router = Router();
 const repo = new InteractionsRepository();

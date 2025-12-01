@@ -2,7 +2,7 @@ import express, { ErrorRequestHandler } from "express";
 import cors from "cors";
 import morgan from "morgan";
 import { config } from "dotenv";
-import routes from "./routes";
+import routes from "./routes/index.js";
 
 export function createApp() {
   config();

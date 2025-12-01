@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
-import { ClientsRepository } from "../repositories/clients-repository";
+import { ClientsRepository } from "../repositories/clients-repository.js";
 
 const router = Router();
 const repo = new ClientsRepository();

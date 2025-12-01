@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { LeadsRepository } from '../repositories/leads-repository';
+import { LeadsRepository } from '../repositories/leads-repository.js';
 
 const router = Router();
 const repo = new LeadsRepository();
