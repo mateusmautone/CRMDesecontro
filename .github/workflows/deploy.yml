@@ -95,6 +95,34 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT }}
           env_vars: |-
             NODE_ENV=production
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}
+
+      - name: Run Prisma migrations on Cloud Run Job
+        run: |
+          echo "Updating/Creating Cloud Run Job for migrations..."
+          gcloud run jobs update crm-backend-migrate \
+            --region ${{ secrets.GCP_REGION }} \
+            --image ${{ secrets.ARTIFACT_REGISTRY_HOST }}/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_BACKEND_REPOSITORY }}/crm-backend:${{ github.sha }} \
+            --set-env-vars CLOUD_SQL_CONNECTION_NAME=${{ secrets.CLOUD_SQL_CONNECTION_NAME }} \
+            --set-env-vars DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            --set-cloudsql-instances ${{ secrets.CLOUD_SQL_CONNECTION_NAME }} \
+            --command npm \
+            --args run,migrate:deploy \
+            || gcloud run jobs create crm-backend-migrate \
+            --region ${{ secrets.GCP_REGION }} \
+            --image ${{ secrets.ARTIFACT_REGISTRY_HOST }}/${{ secrets.GCP_PROJECT }}/${{ secrets.GCP_BACKEND_REPOSITORY }}/crm-backend:${{ github.sha }} \
+            --set-cloudsql-instances ${{ secrets.CLOUD_SQL_CONNECTION_NAME }} \
+            --set-env-vars CLOUD_SQL_CONNECTION_NAME=${{ secrets.CLOUD_SQL_CONNECTION_NAME }} \
+            --set-env-vars DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+            --command npm \
+            --args run,migrate:deploy \
+            --max-retries 0
+
+          echo "Executing migration job..."
+          gcloud run jobs execute crm-backend-migrate --region ${{ secrets.GCP_REGION }} --wait
+
+  # =================================================================================================
   # FRONTEND JOBS
   # =================================================================================================
 
