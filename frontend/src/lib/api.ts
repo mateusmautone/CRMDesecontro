@@ -40,3 +40,4 @@ export async function apiDelete(path: string): Promise<void> {
     throw new Error(`API error ${res.status}: ${text || res.statusText}`);
   }
 }
+//teste
