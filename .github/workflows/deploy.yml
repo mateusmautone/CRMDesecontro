@@ -96,6 +96,7 @@ jobs:
           env_vars: |-
             NODE_ENV=production
             DATABASE_URL=${{ secrets.DATABASE_URL }}
+            CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}
 
       - name: Run Prisma migrations on Cloud Run Job
         run: |
